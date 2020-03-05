@@ -1,50 +1,72 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { ScrollView, FlatList } from 'react-native-gesture-handler';
+import { StyleSheet, View, TouchableOpacity, SafeAreaView } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
+import Envelope from '../components/envelope'
+import Post from '../components/post'
+import Fire from '../fire';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export default class readletter extends React.Component {
     state = {
-        name: ""
+      messages: [],
+    }
+
+    componentDidMount(){
+      this.firebaseItemsLister = Fire.onMessagesChange((data) => {
+        data = data.val();
+        let messages = [];
+        for (let key in data) {
+          let item = data[key];
+          messages.push({time: key, to: item.to, message: item.message, status: item.status, title: item.title});
+        }
+        this.setState({ messages });
+      });
     }
 
     home = () =>{
-        this.props.navigation.navigate("Home",{name: this.state.name})
+        this.props.navigation.navigate("Home")
     }
 
-    letter = () => {
-        this.props.navigation.navigate("Login",{name: this.state.name})
+    pressLetter = (item) => {
+        this.props.navigation.navigate("Login", { message: item })
     }
     
     render() {
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <View style={styles.contentView}>
-                <FlatList
-                    data={[
-                        {key: 'Devin'},
-                        {key: 'Dan'},
-                        {key: 'Dominic'},
-                        ]}
-                    renderItem={({item}) => 
-                        <TouchableOpacity style={styles.touch}
-                                          onPress={this.letter}>
-                            <Text style={styles.item}>{"message: " + item.key}</Text>
-                            <Text style={styles.status}>{"read"}</Text>
-                        </TouchableOpacity>}
-                />
+                  <FlatList
+                      data={this.state.messages}
+                      renderItem={({item}) => 
+                          atAll(item.to)===1 ? 
+                          <Post time={item.time} title={item.title} message={item.message} />
+                          :
+                          <Envelope time={item.time} 
+                                  status={item.status} 
+                                  pressLetter={() => this.pressLetter(item)}
+                                  title={item.title}/>
+                      }
+                      keyExtractor={(item) => item.time}
+                  />
                 </View>
-                
 
                 <View style={styles.buttonRow}>
                     <TouchableOpacity style={styles.home} onPress={this.home}>
-                        <Text style={styles.homeText}>
-                            Home
-                        </Text>
+                      <FontAwesome5 name='home' color='#fff' size={45} />
                     </TouchableOpacity>
                 </View>
-            </View>
+            </SafeAreaView>
         );
     }
+}
+
+function atAll(to){
+  for (let i=0;i<to.length;i++){
+    if (to[i].userName === 'ALL' && to[i].pressStatus === true){
+      return 1;
+    }
+  }
+  return 0;
 }
 
 const styles = StyleSheet.create({
@@ -54,49 +76,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contentView: {
-    flex: 11,
-    marginTop: 50,
-  },
-  touch: {
-    height: 100,
-    width: 370,
-    // borderWidth: 4,
-    // borderColor: "#fff",
-    backgroundColor: "#FFD564",
-    marginTop: 10,
-  },
-  item: {
-    flex: 1,
-    color: '#0B345C',
-    fontSize: 25,
-    marginTop: 10,
-    marginLeft: 20,
-    fontWeight: "600",
-  },
-  status: {
-    flex: 1,
-    color: '#0B345C',
-    fontSize: 25,
-    marginRight: 20,
-    fontWeight: "600",
-    alignSelf: 'flex-end'
+    flex: 12,
+    marginTop: 20,
+    width: '100%'
   },
   buttonRow: {
     flex: 1,
-    flexDirection: "row",
-    marginTop: 20,
+    marginTop: 10,
   },
   home: {
-    // flex: 1,
-    height: 35,
-    width: 120,
-    borderWidth: 4,
-    borderColor: "#fff",
-    borderRadius: 30,
-  },
-  homeText:{
-      color: '#fff',
-      fontSize: 20,
-      alignSelf: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
   },
 });

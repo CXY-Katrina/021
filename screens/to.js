@@ -3,22 +3,28 @@ import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native
 import Selectrow from '../components/selectrow'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
+import Fire from '../fire';
 
-export default class select extends React.Component {
+export default class to extends React.Component {
 
     state = {
         users: [],
+        subject: "",
     }
 
     componentDidMount(){
-        let temp_out = this.props.navigation.getParam('currentResult');
-        this.setState({users: temp_out});
+        this.firebaseItemsLister = Fire.onUsersChange((data) => {
+            data = data.val();
+            let users = [];
+            for (let key in data) {
+              users.push({userName: key, pressStatus: false});
+            }
+            this.setState({ users });
+          });
     }
 
     confirm = () =>{
-        let setResult = this.props.navigation.getParam('setResult');
-        setResult(this.state.users);
-        this.props.navigation.goBack();
+      this.props.navigation.navigate("Subject", {users : this.state.users, subject: this.props.navigation.getParam("subject"), message: this.props.navigation.getParam("message")})
     }
 
     press = (item) => {
@@ -40,6 +46,9 @@ export default class select extends React.Component {
     render() {
         return (
         <SafeAreaView style={styles.container}>
+                <View style={styles.toView}>
+                    <Text style={styles.toText}>TO: </Text>
+                </View>
                 <View style={styles.flatListView}>
                     <FlatList
                     horizontal={false}
@@ -56,7 +65,7 @@ export default class select extends React.Component {
 
                 <View style={styles.confirmeView}>
                     <TouchableOpacity style={styles.confirm} onPress={this.confirm}>
-                        <FontAwesome5 name='check-square' color='#fff' size={45} />
+                        <FontAwesome5 name='arrow-circle-right' color='#fff' size={45} />
                     </TouchableOpacity>
                 </View>
         </SafeAreaView>
@@ -72,16 +81,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'column'
   },
+  toView: {
+    height: '20%',
+    flexDirection: 'column-reverse',
+  },
+  toText: {
+    fontSize: 50,
+    fontWeight: '800',
+    color: '#fff',
+  },
   flatListView: {
       marginTop: 20,
-      flex: 17,
+      height: '60%',
   },
   confirmeView: {
-    flex: 1.5,
+    height: '20%',
   },
   confirm: {
     alignSelf: 'center',
     justifyContent: 'center',
-    marginTop: 10
+    marginTop: 20
   },
 });

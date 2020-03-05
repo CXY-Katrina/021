@@ -1,25 +1,30 @@
 import React from 'react';
 import { StyleSheet, Text, View, StatusBar, Image } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { FontAwesome5 } from '@expo/vector-icons';
 import readletter from './readletter';
 
 export default class home extends React.Component {
     state = {
-        text: "",
-        name: "",
+        isHidden: false,
     }
 
     read = () =>{
-        this.props.navigation.navigate("ReadLetter",{name: this.state.name})
+        this.props.navigation.navigate("ReadLetter")
     }
 
     write = () =>{
-        this.props.navigation.navigate("WriteLetter",{name: this.state.name})
+        this.props.navigation.navigate("To")
     }
 
+    show = () => {
+        if (this.state.isHidden) {
+            this.setState({isHidden: false})
+        } else {
+            this.setState({isHidden: true})
+        }
+    }
 
-    
-    
     render() {
         return (
             <View style={styles.container}>
@@ -28,13 +33,16 @@ export default class home extends React.Component {
                     barStyle={'light-content'}
                 />
 
-                <Image
-                    source={
-                        require('../assets/logo.png')
-                    }
-                    style={styles.logoImage}
-                    resizeMode="contain"
-                />
+                <View>
+                    <TouchableOpacity onPress={this.show}>
+                        <Image
+                            style={styles.logoImage}
+                            source={this.state.isHidden
+                                ? require('../assets/logo.png')
+                                : require('../assets/logo.png')}
+                        />
+                    </TouchableOpacity>
+                </View>
 
                 <Image
                     source={
@@ -43,22 +51,22 @@ export default class home extends React.Component {
                     style={styles.jieyouImage}
                 />
 
+                {this.state.isHidden ? 
                 <View style={styles.buttonRow}>
                     <TouchableOpacity style={styles.readLetter} onPress={this.read}>
-                        <Text style={styles.readText}>
-                            Read Letter
-                        </Text>
+                        <FontAwesome5 name='readme' color='#fff' size={45} />
                     </TouchableOpacity>
 
                     <View style={styles.blank}>
                     </View>
 
                     <TouchableOpacity style={styles.writeLetter} onPress={this.write}>
-                        <Text style={styles.readText}>
-                            Write Letter
-                        </Text>
+                        <FontAwesome5 name='edit' color='#fff' size={45} />
                     </TouchableOpacity>
                 </View>
+                : 
+                <View style={styles.buttonRow}>
+                </View>}
 
             </View>
         );
@@ -68,10 +76,11 @@ export default class home extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B345C'
+    backgroundColor: '#0B345C',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   logoImage: {
-    marginTop: 200,
     height: 250,
     width: 250,
     alignSelf: 'center'
@@ -86,32 +95,15 @@ const styles = StyleSheet.create({
     height: 50,
     flexDirection: "row",
     backgroundColor: '#0B345C',
-    marginTop: 20,
+    marginTop: 40,
   },
   readLetter: {
     flex: 1,
-    height: 35,
-    width: 140,
-    borderWidth: 4,
-    borderColor: "#fff",
-    borderRadius: 30,
-    marginLeft: 45
-  },
-  readText:{
-      color: '#fff',
-      fontSize: 20,
-      alignSelf: 'center',
-      padding: 6,
-      fontWeight: "700"
+    marginLeft: 50,
   },
   writeLetter: {
     flex: 1,
-    height: 35,
-    width: 140,
-    borderWidth: 4,
-    borderColor: "#fff",
-    borderRadius: 30,
-    marginRight: 30,
+    marginRight: 50,
   },
   blank: {
     flex: 0.8

@@ -3,7 +3,6 @@ import firebase from 'firebase'
 class Fire {
     constructor(){
         this.init()
-        this.checkAuth()
     }
 
     init = () => {
@@ -21,62 +20,27 @@ class Fire {
         }
     };
 
-    writeUserData(text, name) {
-        firebase.database().ref('users/').push({
-          to: text,
-          message: name,
-          timestamp: firebase.database.ServerValue.TIMESTAMP,
+    onUsersChange(callback) {
+        firebase.database().ref('Users/').on('value', callback);
+    }
+
+    onMessagesChange(callback) {
+        firebase.database().ref('Messages/').on('value', callback);
+    }
+
+    addMessage(to, message, time, title) {
+        firebase.database().ref('Messages/'+time).set({
+            to: to,
+            message: message,
+            status: false,
+            title: title,
         });
     }
 
-    checkAuth =()=>{
-        firebase.auth().onAuthStateChanged( user => {
-            if (!user){
-                firebase.auth().signInAnonymously();
-            }
+    updateMessageStatus(time) {
+        firebase.database().ref('Messages/' + time).update({
+            status: true,
         });
-    };
-
-    send = messages => {
-        messages.forEach(item => {
-            const message = {
-                text: item.text,
-                timestamp: new Date(firebase.database.ServerValue.TIMESTAMP),
-                user: item.user
-            }
-
-            this.db.push(message)
-        })
-    }
-
-    parse = message => {
-        const{user, text, timestamp} = message.val();
-        const {key: _id} = message;
-        const createdAt = new Date(timestamp);
-
-        return {
-            _id,
-            createdAt,
-            text,
-            user
-        };
-    };
-
-    get = callback => {
-        this.db.on('child_added', snapshot => callback(this.parse(snapshot)));
-    };
-
-    off(){
-        this.db.off()
-    }
-
-    get db(){
-        return firebase.database().ref("messages");
-
-    }
-
-    get uid() {
-        return (firebase.auth().currentUser || {}).uid;
     }
 }
 
