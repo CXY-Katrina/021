@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
           fontSize: 20,
           fontWeight: "600",
           alignSelf: 'center',
+          // paddingTop: 2,
       },
       name: {
         flex: 1,
@@ -60,5 +61,6 @@ const styles = StyleSheet.create({
           fontSize: 20,
           fontWeight: "600",
           alignSelf: 'center',
+          // paddingTop: 2,
       },
 })

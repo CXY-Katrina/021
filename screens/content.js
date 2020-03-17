@@ -19,7 +19,6 @@ export default class content extends React.Component {
     let subject = this.props.navigation.getParam("subject");
     this.setState({ subject });
     let message = this.props.navigation.getParam("message");
-    console.log(message)
     this.setState({ message });
   }
 

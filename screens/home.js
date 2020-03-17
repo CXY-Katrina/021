@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, StatusBar, Image } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import readletter from './readletter';
 
@@ -57,9 +57,6 @@ export default class home extends React.Component {
                         <FontAwesome5 name='readme' color='#fff' size={45} />
                     </TouchableOpacity>
 
-                    <View style={styles.blank}>
-                    </View>
-
                     <TouchableOpacity style={styles.writeLetter} onPress={this.write}>
                         <FontAwesome5 name='edit' color='#fff' size={45} />
                     </TouchableOpacity>
@@ -94,18 +91,20 @@ const styles = StyleSheet.create({
   buttonRow: {
     height: 50,
     flexDirection: "row",
-    backgroundColor: '#0B345C',
     marginTop: 40,
+    alignContent:'space-between',
   },
   readLetter: {
     flex: 1,
-    marginLeft: 50,
+    // marginLeft: 50,
+    alignItems:'center',
+    // backgroundColor: '#abc',
   },
   writeLetter: {
     flex: 1,
-    marginRight: 50,
+    // alignItems:'center',
+    // marginRight: 50,
+    // backgroundColor: '#eee',
+    alignItems:'center'
   },
-  blank: {
-    flex: 0.8
-  }
 });

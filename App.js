@@ -3,6 +3,7 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import createAnimatedSwitchNavigator from 'react-navigation-animated-switch';
 import { Transition } from 'react-native-reanimated';
+import 'react-native-gesture-handler'
 
 
 import home from './screens/home';
@@ -22,44 +23,11 @@ const WriteStack = createStackNavigator(
     Subject: subject,
     Content: content,
     Letter: letter,
-    // WriteLetter: writeletter,
-    // Select: select,
   },
   {
     headerMode: "none"
   }
 );
-
-// const WriteSwitch = createAnimatedSwitchNavigator(
-//   {
-//     To: to,
-//     Subject: subject,
-//     Content: content,
-//     Letter: letter,
-//   },
-//   {
-//     // The previous screen will slide to the bottom while the next screen will fade in
-//     transition: (
-//       <Transition.Together>
-        
-//       {/* <Transition.Change interpolation="easeOutIn" /> */}
-//         <Transition.In 
-//         type="slide-right" 
-//         durationMs={400}
-//         interpolation="easeOut"
-//          />
-//         <Transition.Out
-//         // delayMs={100}
-//           type="fade"
-//           durationMs={300}
-//           // interpolation="easeIn"
-//         />
-
-//       </Transition.Together>
-//     ),
-//     transitionViewStyle: { backgroundColor: '#0B345C' },
-//   }
-// );
 
 const ReadStack = createStackNavigator(
   {
@@ -76,7 +44,6 @@ const AppNavigator = createStackNavigator(
   {
     Home: home,
     WriteStack,
-    // WriteSwitch,
     ReadStack,
   },
   {
